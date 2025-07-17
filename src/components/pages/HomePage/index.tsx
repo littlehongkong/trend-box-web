@@ -1,36 +1,19 @@
 import { useState, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import AdBanner from '@/components/atoms/AdBanner';
 import KeywordSummary from '@/components/molecules/KeywordSummary';
 import NewsGrid from '@/components/organisms/NewsGrid';
 import { useAiNews } from '@/hooks/useAiNews';
-import { format, parseISO, subDays } from 'date-fns';
-import { ko } from 'date-fns/locale';
+import { format, parseISO } from 'date-fns';
 import { FiCalendar } from 'react-icons/fi';
-
-interface NewsItem {
-  id: number;
-  title: string;
-  description: string;
-  sourceUrl: string;
-  category: string;
-  subcategory: string;
-  source: string;
-  publishedAt: string;
-  publishedAtFull?: string;
-  whyDevelopersCare: string;
-}
 
 interface HomePageProps {
   darkMode: boolean;
-  onToggleDarkMode: () => void;
 }
 
-const HomePage = ({ darkMode, onToggleDarkMode }: HomePageProps) => {
+const HomePage = ({ darkMode }: HomePageProps) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedKeywords, setSelectedKeywords] = useState<string[]>([]);
   const { news, loading, error } = useAiNews(selectedDate);
-  const navigate = useNavigate();
 
   // Function to clean HTML entities and source information from text
   const cleanHtmlEntities = (text: string, isTitle: boolean = false): string => {
@@ -57,8 +40,6 @@ const HomePage = ({ darkMode, onToggleDarkMode }: HomePageProps) => {
       .trim();
   };
 
-  // Format the date for display
-  const formattedDate = format(selectedDate, 'yyyy년 MM월 dd일 (EEE)', { locale: ko });
   
   // Process news items with null checks and map to expected format
   const processedNews = useMemo(() => {
@@ -92,8 +73,8 @@ const HomePage = ({ darkMode, onToggleDarkMode }: HomePageProps) => {
   const toggleKeyword = (keyword: string) => {
     setSelectedKeywords(prev => {
       const lowerKeyword = keyword.toLowerCase();
-      if (prev.some(k => k.toLowerCase() === lowerKeyword)) {
-        return prev.filter(k => k.toLowerCase() !== lowerKeyword);
+      if (prev.some((k: string) => k.toLowerCase() === lowerKeyword)) {
+        return prev.filter((k: string) => k.toLowerCase() !== lowerKeyword);
       }
       return [...prev, keyword];
     });
@@ -212,7 +193,7 @@ const HomePage = ({ darkMode, onToggleDarkMode }: HomePageProps) => {
         ([word, count]) => ({
           word: word
             .split(' ')
-            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+            .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
             .join(' '),
           count
         })

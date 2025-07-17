@@ -1,11 +1,12 @@
-import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
-
 interface NewsItem {
-  id: number;
+  id: string;
   title: string;
   source: string;
   published_at: string | null;
   url: string;
+  summary?: string;
+  category?: string;
+  subcategory?: string;
 }
 
 interface DailyBriefingSectionProps {

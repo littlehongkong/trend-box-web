@@ -5,8 +5,18 @@ interface NewsCardProps {
   item: NewsItem;
 }
 
+type CategoryColors = {
+  [key: string]: string;
+  API: string;
+  Model: string;
+  SDK: string;
+  Platform: string;
+  Framework: string;
+  Funding: string;
+};
+
 const getCategoryColor = (category: string) => {
-  const colors = {
+  const colors: CategoryColors = {
     'API': 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
     'Model': 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
     'SDK': 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
@@ -65,9 +75,15 @@ const NewsCard: React.FC<NewsCardProps> = ({ item }) => {
             <i className="ri-time-line text-xs"></i>
             <span 
               className="cursor-help"
-              title={item.publishedAtFull || item.publishedAt}
+              title={item.publishedAt}
             >
-              {item.publishedAt}
+              {new Date(item.publishedAt).toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
             </span>
           </span>
         </div>

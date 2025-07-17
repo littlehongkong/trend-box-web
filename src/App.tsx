@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import HomePage from '@/components/pages/HomePage';
 import DailyBriefingPage from '@/components/pages/DailyBriefingPage';
@@ -7,7 +7,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
 
   // Toggle dark mode
-  const toggleDarkMode = () => {
+  const toggleDarkMode = useCallback(() => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
     if (newDarkMode) {
@@ -17,7 +17,7 @@ function App() {
       document.documentElement.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
-  };
+  }, [darkMode]);
 
   // Initialize theme
   useEffect(() => {
@@ -81,16 +81,10 @@ function App() {
         <main className="bg-white dark:bg-gray-900 min-h-[calc(100vh-4rem)]">
           <Routes>
             <Route path="/" element={
-              <HomePage 
-                darkMode={darkMode} 
-                onToggleDarkMode={toggleDarkMode} 
-              />
+              <HomePage darkMode={darkMode} />
             } />
             <Route path="/daily-briefing" element={
-              <DailyBriefingPage 
-                darkMode={darkMode} 
-                onToggleDarkMode={toggleDarkMode} 
-              />
+              <DailyBriefingPage darkMode={darkMode} />
             } />
           </Routes>
         </main>

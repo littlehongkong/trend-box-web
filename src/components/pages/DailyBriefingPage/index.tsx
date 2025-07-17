@@ -1,39 +1,18 @@
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { useNewsletterSections } from '@/hooks/useNewsletterSections';
 import DailyBriefingSection from './DailyBriefingSection';
 import { format } from 'date-fns';
-import { ko } from 'date-fns/locale';
-import { FiCalendar, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiCalendar } from 'react-icons/fi';
 import AdBanner from '@/components/atoms/AdBanner';
 
 interface DailyBriefingPageProps {
   darkMode: boolean;
 }
 
-export default function DailyBriefingPage({ darkMode, onToggleDarkMode }: DailyBriefingPageProps) {
-  const location = useLocation();
-  const navigate = useNavigate();
+export default function DailyBriefingPage({ darkMode }: DailyBriefingPageProps) {
+
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const { sections, loading, error, toggleSection } = useNewsletterSections({ date: selectedDate });
-  
-  // Format the date for display
-  const formattedDate = format(selectedDate, 'yyyy년 MM월 dd일 (EEE)', { locale: ko });
-
-  const handleDateIncrement = (increment: number) => {
-    const newDate = new Date(selectedDate);
-    newDate.setDate(newDate.getDate() + increment);
-    setSelectedDate(newDate);
-  };
-  
-  // Format the date for display
-  const formatDateForDisplay = (date: Date) => {
-    return format(date, 'yyyy년 MM월 dd일 (EEE)', { locale: ko });
-  };
-
-  const formatDateForInput = (date: Date) => {
-    return format(date, 'yyyy-MM-dd');
-  };
 
   // Handle date change from input
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,11 +22,6 @@ export default function DailyBriefingPage({ darkMode, onToggleDarkMode }: DailyB
         setSelectedDate(date);
       }
     }
-  };
-
-  // Navigate to home page
-  const handleNavigateHome = () => {
-    navigate('/');
   };
 
   if (loading) {
@@ -123,7 +97,10 @@ export default function DailyBriefingPage({ darkMode, onToggleDarkMode }: DailyB
           {sections.map((section) => (
             <DailyBriefingSection
               key={section.id}
-              section={section}
+              section={{
+                ...section,
+                content: section.content.news || []
+              }}
               onToggle={toggleSection}
             />
           ))}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchDailyBriefing, NewsletterSection } from '@/lib/api';
+import { fetchDailyBriefing } from '@/lib/api';
 
 export interface NewsItem {
   id: string;
@@ -8,6 +8,8 @@ export interface NewsItem {
   published_at: string;
   url: string;
   summary?: string;
+  category?: string;
+  subcategory?: string;
 }
 
 export interface NewsSection {
@@ -15,13 +17,9 @@ export interface NewsSection {
   section_name: string;
   section_title: string;
   summary: string;
-  content: Array<{
-    id: number;
-    title: string;
-    source: string;
-    published_at: string | null;
-    url: string;
-  }>;
+  content: {
+    news: NewsItem[];
+  };
   isExpanded: boolean;
 }
 
@@ -56,7 +54,9 @@ export const useNewsletterSections = ({ date = new Date() }: UseNewsletterSectio
           section_name: section.section_name,
           section_title: section.section_title,
           summary: section.summary,
-          content: section.content || [],
+          content: {
+            news: Array.isArray(section.content) ? section.content : []
+          },
           isExpanded: true
         }));
 
@@ -80,14 +80,4 @@ export const useNewsletterSections = ({ date = new Date() }: UseNewsletterSectio
   };
 };
 
-// Helper function to get emoji based on section name
-const getEmojiForSection = (sectionName: string): string => {
-  const emojiMap: Record<string, string> = {
-    launches: '🚀',
-    updates: '🛠️',
-    investment: '📊',
-    infrastructure: '⚙️',
-    trends: '📈',
-  };
-  return emojiMap[sectionName] || '📰';
-};
+

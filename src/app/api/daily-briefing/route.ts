@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import { NextResponse } from 'next/server';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -19,12 +18,12 @@ export async function GET() {
 
     if (error) throw error;
 
-    return NextResponse.json({ data });
+    return Response.json({ data, error: null });
   } catch (error) {
     console.error('Error fetching newsletter sections:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch newsletter sections' },
-      { status: 500 }
+    return new Response(
+      JSON.stringify({ error: 'Error fetching daily briefing' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
 }
