@@ -38,66 +38,91 @@ export default function DailyBriefingSection({ section, onToggle }: DailyBriefin
 
   return (
     <div className="mb-6 border rounded-lg overflow-hidden shadow-sm dark:border-gray-700">
-      <button
-        className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-        onClick={() => onToggle(id)}
-      >
+      <div className="px-6 pt-4">
         <h2 className="text-xl font-semibold">{section_title}</h2>
-        <svg
-          className={`w-5 h-5 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-      
-      {isExpanded && (
-        <div className="px-6 pb-4">
-          {summary && (
-            <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-              <p className="whitespace-pre-line text-gray-700 dark:text-gray-300">
-                {summary.split('\n').map((line, i) => (
-                  <span key={i} className="block mb-2 last:mb-0">
-                    {line.startsWith('•') ? (
-                      <span className="flex">
-                        <span className="mr-2">•</span>
-                        <span>{line.substring(1).trim()}</span>
-                      </span>
-                    ) : (
-                      line
-                    )}
-                  </span>
-                ))}
-              </p>
+        
+        {summary && (
+          <div className="my-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <p className="whitespace-pre-line text-gray-700 dark:text-gray-300">
+              {summary.split('\n').map((line, i) => (
+                <span key={i} className="block mb-2 last:mb-0">
+                  {line.startsWith('•') ? (
+                    <span className="flex">
+                      <span className="mr-2">•</span>
+                      <span>{line.substring(1).trim()}</span>
+                    </span>
+                  ) : (
+                    line
+                  )}
+                </span>
+              ))}
+            </p>
+          </div>
+        )}
+        
+        <div className="mt-6">
+          <div 
+            className="flex items-center justify-between mb-3 cursor-pointer"
+            onClick={() => onToggle(id)}
+          >
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">관련 뉴스</h3>
+            <div className="flex items-center">
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-300 mr-1">
+                {isExpanded ? '접기' : `전체 ${news.length}개 보기`}
+              </span>
+              <svg
+                className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
             </div>
-          )}
+          </div>
           
-          <div className="space-y-4">
-            {news.map((item) => (
+          <div className="space-y-3 pl-1">
+            {news.slice(0, isExpanded ? news.length : 3).map((item) => (
               <a
                 key={item.id}
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 dark:border-gray-700 transition-colors"
+                className="group block p-3 -ml-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
               >
-                <h3 className="font-medium text-gray-900 dark:text-white">{item.title}</h3>
-                <div className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                  <span>{item.source}</span>
+                <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  {item.title}
+                </h4>
+                <div className="mt-1.5 flex items-center text-xs text-gray-500 dark:text-gray-400">
+                  <span className="font-medium text-gray-700 dark:text-gray-300">{item.source}</span>
                   {item.published_at && (
-                    <span className="mx-2">•</span>
-                  )}
-                  {formatDate(item.published_at) && (
-                    <span>{formatDate(item.published_at)}</span>
+                    <>
+                      <span className="mx-2 text-gray-300 dark:text-gray-600">•</span>
+                      <time dateTime={item.published_at}>
+                        {formatDate(item.published_at)}
+                      </time>
+                    </>
                   )}
                 </div>
               </a>
             ))}
+            {news.length > 3 && (
+              <div className="text-center pt-2">
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onToggle(id);
+                  }}
+                  className="text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                >
+                  {isExpanded ? '접기' : `+${news.length - 3}개 더 보기`}
+                </button>
+              </div>
+            )}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

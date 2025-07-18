@@ -77,13 +77,21 @@ const NewsCard: React.FC<NewsCardProps> = ({ item }) => {
               className="cursor-help"
               title={item.publishedAt}
             >
-              {new Date(item.publishedAt).toLocaleDateString('ko-KR', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
+              {(() => {
+                // Parse the date as UTC and add 9 hours to convert to KST
+                const utcDate = new Date(item.publishedAt);
+                const kstDate = new Date(utcDate.getTime() + (9 * 60 * 60 * 1000));
+                
+                // Format as Korean date string
+                return kstDate.toLocaleDateString('ko-KR', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false
+                });
+              })()}
             </span>
           </span>
         </div>

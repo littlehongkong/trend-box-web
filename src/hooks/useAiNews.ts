@@ -32,17 +32,29 @@ export const useAiNews = (selectedDate?: Date) => {
           .order('pub_date', { ascending: false });
           
         if (selectedDate) {
-          // Set the start of the selected day in UTC
-          const startDate = new Date(selectedDate);
-          startDate.setUTCHours(0, 0, 0, 0);
+          // 선택한 날짜를 KST로 간주하고 UTC로 변환
+          const year = selectedDate.getFullYear();
+          const month = selectedDate.getMonth();
+          const day = selectedDate.getDate();
           
-          // Set the end of the selected day in UTC
-          const endDate = new Date(selectedDate);
-          endDate.setUTCHours(23, 59, 59, 999);
+          // KST 00:00:00 (선택한 날짜) = UTC 15:00:00 (전날)
+          const utcStart = new Date(Date.UTC(year, month, day - 1, 15, 0, 0, 0));
+          // KST 23:59:59.999 (선택한 날짜) = UTC 14:59:59.999 (당일)
+          const utcEnd = new Date(Date.UTC(year, month, day, 14, 59, 59, 999));
           
+          console.log('Selected date (local):', selectedDate);
+          console.log('KST Range:', 
+            new Date(Date.UTC(year, month, day, 0, 0, 0, 0) - (9 * 60 * 60 * 1000)), 
+            'to', 
+            new Date(Date.UTC(year, month, day, 23, 59, 59, 999) - (9 * 60 * 60 * 1000))
+          );
+          console.log('UTC Range for query:', utcStart.toISOString(), 'to', utcEnd.toISOString());
+          
+          // UTC 범위로 필터링
           query = query
-            .gte('pub_date', startDate.toISOString())
-            .lte('pub_date', endDate.toISOString());
+            .gte('pub_date', utcStart.toISOString())
+            .lte('pub_date', utcEnd.toISOString())
+            .order('pub_date', { ascending: false });
         }
         
         const { data, error } = await query;

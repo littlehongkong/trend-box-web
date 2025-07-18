@@ -51,9 +51,7 @@ const HomePage = ({ darkMode }: HomePageProps) => {
       category: item.category || '',
       subcategory: item.subcategory || '',
       source: item.source || '',
-      publishedAt: item.pub_date ? format(parseISO(item.pub_date), 'MM/dd HH:mm') : '',
-      publishedAtFull: item.pub_date ? format(parseISO(item.pub_date), 'yyyy년 MM월 dd일 HH:mm') : '',
-      whyDevelopersCare: ''
+      publishedAt: item.pub_date
     }));
   }, [news]);
 

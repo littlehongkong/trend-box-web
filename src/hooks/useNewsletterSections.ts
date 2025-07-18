@@ -57,7 +57,7 @@ export const useNewsletterSections = ({ date = new Date() }: UseNewsletterSectio
           content: {
             news: Array.isArray(section.content) ? section.content : []
           },
-          isExpanded: true
+          isExpanded: false
         }));
 
         setSections(formattedSections);
