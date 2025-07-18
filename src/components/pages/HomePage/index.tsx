@@ -58,13 +58,17 @@ const HomePage = ({ darkMode }: HomePageProps) => {
 
   // Filter news based on selected keywords
   const filteredNews = useMemo(() => {
-    if (selectedKeywords.length === 0) return processedNews;
+    if (!selectedKeywords.length) return processedNews;
     
     return processedNews.filter(item => {
-      const itemText = `${item.title} ${item.description}`.toLowerCase();
-      return selectedKeywords.some(keyword => 
-        itemText.includes(keyword.toLowerCase())
-      );
+      const searchText = `${item.title} ${item.description}`.toLowerCase();
+      return selectedKeywords.some(keyword => {
+        // Handle special case for OpenAI to match variations
+        if (keyword.toLowerCase() === 'openai') {
+          return /openai|open ai|오픈에이아이|오픈AI/i.test(searchText);
+        }
+        return searchText.includes(keyword.toLowerCase());
+      });
     });
   }, [processedNews, selectedKeywords]);
 
@@ -251,7 +255,21 @@ const HomePage = ({ darkMode }: HomePageProps) => {
       {/* Date Picker Section */}
       <div className="bg-white dark:bg-gray-800 shadow-sm py-4">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="flex justify-center">
+          <div className="flex items-center justify-center space-x-4">
+            <button
+              onClick={() => {
+                const prevDay = new Date(selectedDate);
+                prevDay.setDate(prevDay.getDate() - 1);
+                setSelectedDate(prevDay);
+              }}
+              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Previous day"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            
             <div className="relative" style={{ width: '240px' }}>
               <FiCalendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
               <input
@@ -262,20 +280,43 @@ const HomePage = ({ darkMode }: HomePageProps) => {
                 className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
+            
+            <button
+              onClick={() => {
+                const nextDay = new Date(selectedDate);
+                nextDay.setDate(nextDay.getDate() + 1);
+                
+                // Don't allow going past today
+                if (nextDay <= new Date()) {
+                  setSelectedDate(nextDay);
+                }
+              }}
+              disabled={format(selectedDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')}
+              className={`p-2 rounded-full transition-colors ${
+                format(selectedDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')
+                  ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
+                  : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+              }`}
+              aria-label="Next day"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className="max-w-7xl mx-auto px-4 pb-8">
         {/* Trending Keywords */}
-        <div className="mb-8">
+        <div className="mt-8 mb-8">
           <KeywordSummary 
             keywords={trendingKeywords.map(kw => kw.word)} 
             selectedKeywords={selectedKeywords}
             onKeywordClick={toggleKeyword}
             title="Trending Keywords"
-            className="mb-2"
+            className="mb-0"
           />
           {selectedKeywords.length > 0 && (
             <div className="flex flex-wrap items-center gap-2 mb-4 px-2">
@@ -298,6 +339,12 @@ const HomePage = ({ darkMode }: HomePageProps) => {
               </button>
             </div>
           )}
+        </div>
+
+        <div className="flex justify-end mb-2">
+          <span className="text-sm text-gray-500 dark:text-gray-400">
+            총 {news.length}건
+          </span>
         </div>
 
         {/* News Grid */}

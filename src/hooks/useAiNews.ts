@@ -29,6 +29,7 @@ export const useAiNews = (selectedDate?: Date) => {
         let query = supabase
           .from('ai_news')
           .select('*')
+          .eq('is_duplicate', false)  // 중복되지 않은 뉴스만 가져오기
           .order('pub_date', { ascending: false });
           
         if (selectedDate) {
