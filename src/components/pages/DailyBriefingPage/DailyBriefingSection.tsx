@@ -41,7 +41,7 @@ export default function DailyBriefingSection({ section, onToggle }: DailyBriefin
       <div className="px-6 pt-4">
         <h2 className="text-xl font-semibold">{section_title}</h2>
         
-        {summary && (
+        {summary ? (
           <div className="my-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
             <p className="whitespace-pre-line text-gray-700 dark:text-gray-300">
               {summary.split('\n').map((line, i) => (
@@ -57,6 +57,17 @@ export default function DailyBriefingSection({ section, onToggle }: DailyBriefin
                 </span>
               ))}
             </p>
+          </div>
+        ) : (
+          <div className="my-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+            <div className="flex items-start">
+              <svg className="h-5 w-5 text-yellow-500 dark:text-yellow-400 mt-0.5 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <p className="text-yellow-700 dark:text-yellow-300 text-sm">
+                이 섹션에 대한 요약 정보는 데이터 부족으로 제공되지 않습니다.
+              </p>
+            </div>
           </div>
         )}
         
