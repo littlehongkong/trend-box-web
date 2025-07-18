@@ -3,7 +3,8 @@ import AdBanner from '@/components/atoms/AdBanner';
 import KeywordSummary from '@/components/molecules/KeywordSummary';
 import NewsGrid from '@/components/organisms/NewsGrid';
 import { useAiNews } from '@/hooks/useAiNews';
-import { format, parseISO } from 'date-fns';
+import { NewsItem } from '@/types';
+import { format } from 'date-fns';
 import { FiCalendar } from 'react-icons/fi';
 
 interface HomePageProps {
@@ -301,7 +302,7 @@ const HomePage = ({ darkMode }: HomePageProps) => {
 
         {/* News Grid */}
         <NewsGrid 
-          newsItems={filteredNews} 
+          newsItems={filteredNews.filter((item): item is NewsItem & { publishedAt: string } => item.publishedAt !== null)} 
           categories={categories} 
           sources={sources} 
           className="mb-12"
