@@ -77,19 +77,21 @@ export default function DailyBriefingSection({ section, onToggle }: DailyBriefin
             onClick={() => onToggle(id)}
           >
             <h3 className="text-lg font-medium text-gray-900 dark:text-white">관련 뉴스</h3>
-            <div className="flex items-center">
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-300 mr-1">
-                {isExpanded ? '접기' : `전체 ${news.length}개 보기`}
-              </span>
-              <svg
-                className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
+            {news.length > 3 && (
+              <div className="flex items-center">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-300 mr-1">
+                  {isExpanded ? '접기' : `전체 ${news.length}개 보기`}
+                </span>
+                <svg
+                  className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            )}
           </div>
           
           <div className="space-y-3 pl-1">
