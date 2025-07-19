@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase';
 
 export const useNewsletterSubscription = () => {
   const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'unsubscribed'>('idle');
   const [error, setError] = useState<string | null>(null);
 
   const subscribe = async (email: string) => {

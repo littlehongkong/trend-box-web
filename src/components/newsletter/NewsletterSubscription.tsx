@@ -38,14 +38,13 @@ const NewsletterSubscription = () => {
       
       // 성공 메시지를 잠시 보여준 후 초기 상태로 복귀
       setTimeout(() => {
-        setStatus('idle');
         setEmail(''); // Clear email after showing success message
       }, 3000);
     }
   };
 
   // 구독 해지 성공 메시지 표시
-  if (status === 'unsubscribed') {
+  if (status === 'success') {
     return (
       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 text-center">
         <div className="flex flex-col items-center">
