@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { useNewsletterSections } from '@/hooks/useNewsletterSections';
 import DailyBriefingSection from './DailyBriefingSection';
 import { format } from 'date-fns';
 import { FiCalendar } from 'react-icons/fi';
 import AdBanner from '@/components/atoms/AdBanner';
+
+const NewsletterSubscription = lazy(() => import('@/components/newsletter/NewsletterSubscription'));
 
 interface DailyBriefingPageProps {
   darkMode: boolean;
@@ -112,29 +114,6 @@ export default function DailyBriefingPage({ darkMode }: DailyBriefingPageProps) 
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
-      {/* Content Section
-
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => handleDateIncrement(-1)}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-              aria-label="Previous day"
-            >
-              <FiChevronLeft className="w-5 h-5" />
-            </button>
-            <span className="text-sm font-medium">{format(selectedDate, 'yyyy년 MM월 dd일 (EEE)', { locale: ko })}</span>
-            <button
-              onClick={() => handleDateIncrement(1)}
-              disabled={format(selectedDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <FiChevronRight className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-        */}
-
         {hasContent ? (
           <div className="space-y-6">
             {sections.map((section) => (
@@ -161,6 +140,22 @@ export default function DailyBriefingPage({ darkMode }: DailyBriefingPageProps) 
             </p>
           </div>
         )}
+
+        {/* Newsletter Subscription Section */}
+        <div className="pt-10">
+          <Suspense fallback={
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700 animate-pulse h-64">
+              <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-6"></div>
+              <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded mb-4"></div>
+              <div className="h-10 bg-blue-200 dark:bg-blue-900 rounded"></div>
+            </div>
+          }>
+            <NewsletterSubscription />
+          </Suspense>
+        </div>
+
+        <AdBanner position="bottom" />
       </div>
     </div>
   );
