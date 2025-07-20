@@ -1,6 +1,7 @@
 interface NewsItem {
   id: string;
   title: string;
+  title_kr?: string;
   source: string;
   published_at: string | null;
   url: string;
@@ -94,42 +95,61 @@ export default function DailyBriefingSection({ section, onToggle }: DailyBriefin
             )}
           </div>
           
-          <div className="space-y-3 pl-1">
-            {news.slice(0, isExpanded ? news.length : 3).map((item) => (
-              <a
-                key={item.id}
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group block p-3 -ml-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
-              >
-                <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                  {item.title}
-                </h4>
-                <div className="mt-1.5 flex items-center text-xs text-gray-500 dark:text-gray-400">
-                  <span className="font-medium text-gray-700 dark:text-gray-300">{item.source}</span>
-                  {item.published_at && (
-                    <>
-                      <span className="mx-2 text-gray-300 dark:text-gray-600">•</span>
-                      <time dateTime={item.published_at}>
-                        {formatDate(item.published_at)}
-                      </time>
-                    </>
-                  )}
-                </div>
-              </a>
-            ))}
+          <div className="space-y-2">
+            <div className="space-y-2">
+              {news.slice(0, isExpanded ? news.length : 3).map((item, index) => (
+                <a
+                  key={item.id}
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-start p-3 -mx-2 rounded-lg transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-800/70 hover:shadow-sm"
+                >
+                  <span className="flex-shrink-0 flex items-center justify-center w-5 h-5 mt-0.5 mr-3 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 text-xs font-medium">
+                    {index + 1}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-base font-medium text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug">
+                      {item.title_kr || item.title}
+                    </h4>
+                    {item.published_at && (
+                      <div className="mt-1.5 flex items-center text-xs text-gray-500 dark:text-gray-400">
+                        <svg className="w-3.5 h-3.5 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <time dateTime={item.published_at}>
+                          {formatDate(item.published_at)}
+                        </time>
+                      </div>
+                    )}
+                  </div>
+                  <svg className="w-4 h-4 text-gray-400 group-hover:text-blue-500 dark:group-hover:text-blue-400 mt-1 flex-shrink-0 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </a>
+              ))}
+            </div>
+            
             {news.length > 3 && (
-              <div className="text-center pt-2">
+              <div className="pt-1">
                 <button
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     onToggle(id);
                   }}
-                  className="text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                  className="w-full py-2 px-4 text-sm font-medium text-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors rounded-lg hover:bg-blue-50 dark:hover:bg-gray-800/50"
                 >
-                  {isExpanded ? '접기' : `+${news.length - 3}개 더 보기`}
+                  {isExpanded ? (
+                    <span className="inline-flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                      </svg>
+                      접기
+                    </span>
+                  ) : (
+                    <span>+ {news.length - 3}개 더 보기</span>
+                  )}
                 </button>
               </div>
             )}
